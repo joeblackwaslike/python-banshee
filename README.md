@@ -6,7 +6,13 @@ A command dispatcher and message bus implementation for python (ported to python
 
 ## 🛠 Installing
 
+In python 3.7 - 3.9
+```zsh
+poetry add "https://github.com/joeblackwaslike/python-banshee.git
 ```
+
+In python 3.10+
+```zsh
 poetry add banshee
 ```
 
