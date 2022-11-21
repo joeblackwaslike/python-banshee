@@ -1,20 +1,21 @@
 """
 A registry of handlers.
 """
+from __future__ import annotations
 
 import collections
 import collections.abc
 import inspect
-import types
 import typing
 
 import banshee.errors
 import banshee.request
+import typing_extensions
 
 T = typing.TypeVar("T")
 H = typing.TypeVar(
     "H",
-    bound=type | collections.abc.Callable[..., typing.Any],
+    bound=typing.Union[typing.Type, collections.abc.Callable],
 )
 
 
@@ -50,27 +51,16 @@ class Registry(banshee.request.HandlerLocator):
 
             return "..."
 
-        if target is types.NoneType:
+        if target is type(None):
             # return strings as strings
 
             return "None"
 
-        if typing.get_args(target):
+        if typing_extensions.get_args(target):
             # make sure we capture generic arguments
 
             obj = typing.cast(typing.Any, target)
-
-            args = ", ".join(self._name_for(x) for x in typing.get_args(target))
-
-            if obj.__name__ == "Annotated":
-                return f"typing.Annotated[{args}]"
-
-            if target.__module__ == "builtins":
-                # no module prefix for built-in types
-
-                return f"{obj.__name__}[{args}]"
-
-            return f"{obj.__module__}.{obj.__name__}[{args}]"
+            return type(obj).__repr__(obj)
 
         if inspect.isclass(target) or inspect.isfunction(target):
             # plain old functions and classes
@@ -91,8 +81,8 @@ class Registry(banshee.request.HandlerLocator):
 
     def subscribe(
         self,
-        handler: type | collections.abc.Callable[..., typing.Any],
-        to: type,
+        handler: typing.Type | collections.abc.Callable[..., typing.Any],
+        to: typing.Type,
         name: str | None = None,
     ) -> None:
         """
@@ -116,7 +106,7 @@ class Registry(banshee.request.HandlerLocator):
 
     def subscribe_to(
         self,
-        to: type,
+        to: typing.Type,
         name: str | None = None,
     ) -> collections.abc.Callable[[H], H]:
         """
@@ -134,7 +124,7 @@ class Registry(banshee.request.HandlerLocator):
         :returns: decorator function
         """
 
-        def _decorator(handler: H, /) -> H:
+        def _decorator(handler: H) -> H:
             self.subscribe(handler, to=to, name=name)
 
             return handler

@@ -5,7 +5,8 @@ Pipeline related fixtures.
 import asyncio
 import collections.abc
 import typing
-import unittest.mock
+
+import mock
 
 import banshee
 
@@ -23,11 +24,11 @@ def mock_handle_message() -> typing.Any:
 
         return message
 
-    return unittest.mock.create_autospec(handle, spec_set=True, side_effect=handle)
+    return mock.create_autospec(handle, spec_set=True, side_effect=handle)
 
 
 def mock_recursive_handle_message(
-    iterator: collections.abc.Iterator[banshee.Message[typing.Any]],
+    iterator: collections.abc.Iterator,
     middleware: banshee.Middleware,
 ) -> typing.Any:
     """
@@ -38,14 +39,15 @@ def mock_recursive_handle_message(
         # release the event loop, useful in tests that test for task isolation
         await asyncio.sleep(0)
 
-        if next_message := next(iterator, None):
-            await middleware(next_message, mock)
+        next_message = next(iterator, None)
+        if next_message:
+            await middleware(next_message, m)
 
         return message
 
-    mock = unittest.mock.create_autospec(handle, spec_set=True, side_effect=handle)
+    m = mock.create_autospec(handle, spec_set=True, side_effect=handle)
 
-    return mock
+    return m
 
 
 def mock_middleware() -> typing.Any:
@@ -59,7 +61,7 @@ def mock_middleware() -> typing.Any:
     ) -> banshee.Message[T]:
         return message
 
-    return unittest.mock.create_autospec(
+    return mock.create_autospec(
         middleware,
         spec_set=True,
         side_effect=middleware,

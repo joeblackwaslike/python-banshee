@@ -1,6 +1,7 @@
 """
 Add unique identifiers to messages.
 """
+from __future__ import annotations
 
 import typing
 import uuid

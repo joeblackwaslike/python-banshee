@@ -1,7 +1,7 @@
 # Banshee
 
 <p class="lead">
-A command dispatcher and message bus implementation for python.
+A command dispatcher and message bus implementation for python (ported to python 3.7+).
 </p>
 
 ## 🛠 Installing

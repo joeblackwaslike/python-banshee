@@ -6,10 +6,11 @@ import datetime
 import typing
 import unittest.mock
 
-import conjecture
 import freezegun
 import pytest
 import typeguard
+from dirty_equals import IsPositiveInt
+import mock
 
 import banshee
 
@@ -24,7 +25,7 @@ def mock_bus() -> typing.Any:
     """
     Mock bus.
     """
-    return unittest.mock.create_autospec(banshee.Bus, spec_set=True)
+    return mock.create_autospec(banshee.Bus, spec_set=True)
 
 
 @pytest.mark.asyncio
@@ -146,9 +147,7 @@ async def test_handle_should_record_calls() -> None:
         typeguard.__file__,  # needed for when plug-in is enabled due to decorator...
     }
     assert bus.messages[0].function in {"test_handle_should_record_calls", "wrapper"}
-    assert bus.messages[0].lineno == (
-        conjecture.instance_of(int) & conjecture.greater_than(0)
-    )
+    assert bus.messages[0].lineno == IsPositiveInt()
     assert bus.messages[0].request == request
     assert bus.messages[0].result_contexts == (context2,)
     assert bus.messages[0].timestamp == now

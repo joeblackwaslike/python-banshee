@@ -1,10 +1,13 @@
 """
 A command / event / query bus implementation.
 """
+from __future__ import annotations
 
 import abc
 import collections.abc
 import typing
+
+import typing_extensions
 
 import banshee.context
 import banshee.errors
@@ -14,8 +17,8 @@ import banshee.message
 T = typing.TypeVar("T")
 
 
-@typing.runtime_checkable
-class Bus(typing.Protocol):
+@typing_extensions.runtime_checkable
+class Bus(typing_extensions.Protocol):
     """
     Bus protocol.
 

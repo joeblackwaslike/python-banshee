@@ -1,6 +1,7 @@
 """
 Postpone handling of nested requests.
 """
+from __future__ import annotations
 
 import collections
 import contextvars
@@ -23,7 +24,7 @@ class _HandleAfterState:
 
     is_processing: bool = False
     queue: collections.deque[
-        tuple[banshee.message.Message[typing.Any], banshee.message.HandleMessage]
+        typing.Tuple[banshee.message.Message[typing.Any], banshee.message.HandleMessage]
     ] = dataclasses.field(default_factory=collections.deque)
 
 
@@ -104,7 +105,7 @@ class HandleAfterMiddleware(banshee.message.Middleware):
 
         # all done, time to process all the deferred messages
 
-        errors: list[Exception] = []
+        errors: typing.List[Exception] = []
 
         while state.queue:  # pylint: disable=while-used
             queued_message, queued_handle = state.queue.popleft()

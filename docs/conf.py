@@ -32,7 +32,8 @@ author_url = "https://danielknell.co.uk"
 extensions = [
     "autodocsumm",
     "myst_parser",
-    "sphinx_artisan_theme",
+    # "sphinx_artisan_theme",
+    "sphinx_material",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinxcontrib.spelling",
@@ -52,7 +53,7 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "artisan"
+html_theme = "sphinx_material"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -85,7 +86,7 @@ suppress_warnings = [
 ]
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.8", None),
+    "python": ("https://docs.python.org/3.7", None),
     "injector": ("https://injector.readthedocs.io/en/latest", None),
 }
 

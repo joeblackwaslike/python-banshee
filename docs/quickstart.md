@@ -13,7 +13,7 @@ An example script to greet people via a dispatched command.
 A command encapsulates all information needed to process it. It can be any object but a frozen dataclass  works best.
 
 ```py
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class GreetCommand:
     """
     Greet command.

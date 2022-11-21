@@ -4,8 +4,8 @@ Tests for :class:`banshee.bus.MessageBus`
 
 import typing
 
-import conjecture
 import pytest
+from dirty_equals import IsInstance
 
 import banshee
 import banshee.bus
@@ -34,7 +34,7 @@ async def test_handle_should_dispatch_request_to_middleware() -> None:
 
     middleware.assert_awaited_once_with(
         banshee.message_for(request),
-        conjecture.instance_of(banshee.message.MiddlewareChain),
+        IsInstance(banshee.message.MiddlewareChain),
     )
 
 
@@ -56,7 +56,7 @@ async def test_handle_should_dispatch_request_with_context() -> None:
 
     middleware.assert_awaited_once_with(
         banshee.message_for(request, contexts=[context1, context2]),
-        conjecture.instance_of(banshee.message.MiddlewareChain),
+        IsInstance(banshee.message.MiddlewareChain),
     )
 
 

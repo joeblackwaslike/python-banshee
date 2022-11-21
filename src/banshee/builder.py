@@ -1,8 +1,10 @@
 """
 A builder for :class:`~banshee.message_bus.MessageBus` instances.
 """
+from __future__ import annotations
 
 import dataclasses
+import typing
 
 import banshee.bus
 import banshee.message
@@ -11,7 +13,7 @@ import banshee.registry
 import banshee.request
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class Builder:
     """
     Builder.
@@ -20,13 +22,13 @@ class Builder:
     {class}`banshee.Bus`.
     """
 
-    middleware: tuple[banshee.message.Middleware, ...] = dataclasses.field(
+    middleware: typing.Tuple[banshee.message.Middleware, ...] = dataclasses.field(
         default_factory=tuple
     )
     locator: banshee.request.HandlerLocator | None = None
     factory: banshee.request.HandlerFactory | None = None
 
-    def with_middleware(self, middleware: banshee.message.Middleware) -> "Builder":
+    def with_middleware(self, middleware: banshee.message.Middleware) -> Builder:
         """
         With middleware.
 
@@ -38,7 +40,7 @@ class Builder:
         """
         return dataclasses.replace(self, middleware=self.middleware + (middleware,))
 
-    def with_locator(self, locator: banshee.request.HandlerLocator) -> "Builder":
+    def with_locator(self, locator: banshee.request.HandlerLocator) -> Builder:
         """
         With locator.
 
@@ -50,7 +52,7 @@ class Builder:
         """
         return dataclasses.replace(self, locator=locator)
 
-    def with_factory(self, factory: banshee.request.HandlerFactory) -> "Builder":
+    def with_factory(self, factory: banshee.request.HandlerFactory) -> Builder:
         """
         With factory.
 

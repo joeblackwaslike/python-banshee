@@ -1,13 +1,14 @@
 """
 Additional context for requests.
 """
+from __future__ import annotations
 
 import dataclasses
 import typing
 import uuid
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class HandleAfter:
     """
     Handle after context.
@@ -17,7 +18,7 @@ class HandleAfter:
     """
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class Dispatch:
     """
     Dispatch context.
@@ -35,7 +36,7 @@ class Dispatch:
     result: typing.Any | None
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class Identity:
     """
     Identity context.
@@ -49,7 +50,7 @@ class Identity:
     unique_id: uuid.UUID
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class Causation:
     """
     Causation context.

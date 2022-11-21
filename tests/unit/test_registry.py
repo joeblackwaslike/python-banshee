@@ -4,6 +4,8 @@ Tests for :class:`banshee.Registry`
 import collections.abc
 import typing
 
+import typing_extensions
+
 import banshee
 
 import tests.fixture
@@ -21,11 +23,11 @@ class _Handler:  # pylint: disable=too-few-public-methods
     pass
 
 
-def _handler(_: _Foo, /) -> None:
+def _handler(_: _Foo) -> None:
     pass
 
 
-def name_for(handler: type | collections.abc.Callable[..., typing.Any]) -> str:
+def name_for(handler: typing.Union[typing.Type, collections.abc.Callable]) -> str:
     """
     Name for handler
 
@@ -172,23 +174,35 @@ def test_subscribe_should_generate_handler_name_for_generics() -> None:
 
     name = name_for(_GenericHandler[Foo])
 
-    assert name == f"{__name__}._GenericHandler[Foo]", name
+    assert (
+        name
+        == "tests.unit.test_registry.test_subscribe_should_generate_handler_name_for_generics.<locals>._GenericHandler[~Foo]"
+    )
 
     name = name_for(_GenericHandler[_Bar])
-
-    assert name == f"{__name__}._GenericHandler[{__name__}._Bar]", name
+    assert (
+        name
+        == "tests.unit.test_registry.test_subscribe_should_generate_handler_name_for_generics.<locals>._GenericHandler[tests.unit.test_registry._Bar]"
+    )
 
     name = name_for(_GenericHandler[str])
+    assert (
+        name
+        == "tests.unit.test_registry.test_subscribe_should_generate_handler_name_for_generics.<locals>._GenericHandler[str]"
+    )
 
-    assert name == f"{__name__}._GenericHandler[str]", name
 
-    name = name_for(_GenericHandler[tuple[str, ...]])
-
-    assert name == f"{__name__}._GenericHandler[tuple[str, ...]]", name
+    name = name_for(_GenericHandler[typing.Tuple[str, ...]])
+    assert (
+        name
+        == "tests.unit.test_registry.test_subscribe_should_generate_handler_name_for_generics.<locals>._GenericHandler[typing.Tuple[str, ...]]"
+    )
 
     name = name_for(_GenericHandler[None])
-
-    assert name == f"{__name__}._GenericHandler[None]", name
+    assert (
+        name
+        == "tests.unit.test_registry.test_subscribe_should_generate_handler_name_for_generics.<locals>._GenericHandler[NoneType]"
+    )
 
 
 def test_subscribe_should_generate_handler_name_for_annotated_types() -> None:
@@ -196,10 +210,10 @@ def test_subscribe_should_generate_handler_name_for_annotated_types() -> None:
     subscribe() should generate handler name for Annotated types
     """
 
-    name = name_for(typing.Annotated[_Handler, "foo"])  # type: ignore
+    name = name_for(typing_extensions.Annotated[_Handler, "foo"])  # type: ignore
 
-    assert name == f"typing.Annotated[{__name__}._Handler, {repr('foo')}]", name
+    assert name == "typing_extensions.Annotated[tests.unit.test_registry._Handler, 'foo']"
 
-    name = name_for(typing.Annotated[_Handler, 123])  # type: ignore
+    name = name_for(typing_extensions.Annotated[_Handler, 123])  # type: ignore
+    assert name == "typing_extensions.Annotated[tests.unit.test_registry._Handler, 123]"
 
-    assert name == f"typing.Annotated[{__name__}._Handler, {repr(123)}]", name

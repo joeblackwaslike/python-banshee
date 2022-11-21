@@ -1,11 +1,14 @@
 """
 Messages associating requests with extra context.
 """
+from __future__ import annotations
 
 import abc
 import collections.abc
 import dataclasses
 import typing
+
+import typing_extensions
 
 #: Context Type
 CT = typing.TypeVar("CT")
@@ -14,7 +17,7 @@ CT = typing.TypeVar("CT")
 T = typing.TypeVar("T")
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class Message(typing.Generic[T]):
     """
     Message.
@@ -27,13 +30,10 @@ class Message(typing.Generic[T]):
 
     request: T
 
-    contexts: tuple[typing.Any, ...] = dataclasses.field(
-        default_factory=tuple,
-        kw_only=True,
-    )
+    contexts: typing.Tuple[typing.Any, ...] = dataclasses.field(default_factory=tuple)
 
     @typing.overload
-    def get(self, key: type[CT]) -> CT | None:
+    def get(self, key: typing.Type[CT]) -> CT | None:
         """
         Get context.
 
@@ -42,7 +42,7 @@ class Message(typing.Generic[T]):
         """
 
     @typing.overload
-    def get(self, key: type[CT], default: CT) -> CT:
+    def get(self, key: typing.Type[CT], default: CT) -> CT:
         """
         Get context.
 
@@ -52,7 +52,7 @@ class Message(typing.Generic[T]):
         :returns: requested context or default
         """
 
-    def get(self, key: type[CT], default: CT | None = None) -> CT | None:
+    def get(self, key: typing.Type[CT], default: CT | None = None) -> CT | None:
         """
         Get context.
 
@@ -66,7 +66,7 @@ class Message(typing.Generic[T]):
         except KeyError:
             return default
 
-    def all(self, key: type[CT]) -> collections.abc.Iterable[CT]:
+    def all(self, key: typing.Type[CT]) -> collections.abc.Iterable[CT]:
         """
         All contexts.
 
@@ -76,7 +76,7 @@ class Message(typing.Generic[T]):
         """
         return (v for v in self.contexts if isinstance(v, key))
 
-    def has(self, key: type) -> bool:
+    def has(self, key: typing.Type) -> bool:
         """
         Has context.
 
@@ -86,17 +86,17 @@ class Message(typing.Generic[T]):
         """
         return key in self
 
-    def __getitem__(self, key: type[CT]) -> CT:
+    def __getitem__(self, key: typing.Type[CT]) -> CT:
         for value in reversed(self.contexts):
             if isinstance(value, key):
                 return value
 
         raise KeyError(key)
 
-    def __contains__(self, key: type) -> bool:
+    def __contains__(self, key: typing.Type) -> bool:
         return any(isinstance(value, key) for value in reversed(self.contexts))
 
-    def including(self, *values: object) -> "Message[T]":
+    def including(self, *values: object) -> Message[T]:
         """
         Include context.
 
@@ -111,7 +111,7 @@ class Message(typing.Generic[T]):
 
         return dataclasses.replace(self, contexts=self.contexts + tuple(values))
 
-    def excluding(self, *key: type) -> "Message[T]":
+    def excluding(self, *key: typing.Type) -> Message[T]:
         """
         Exclude context.
 
@@ -153,7 +153,7 @@ def message_for(
     return request.including(*tuple(contexts))
 
 
-class HandleMessage(typing.Protocol):
+class HandleMessage(typing_extensions.Protocol):
     """
     Handle message protocol.
 
@@ -173,8 +173,8 @@ class HandleMessage(typing.Protocol):
         """
 
 
-@typing.runtime_checkable
-class Middleware(typing.Protocol):
+@typing_extensions.runtime_checkable
+class Middleware(typing_extensions.Protocol):
     """
     Middleware protocol.
 

@@ -1,6 +1,7 @@
 """
 Dispatch requests to handlers.
 """
+from __future__ import annotations
 
 import logging
 import typing

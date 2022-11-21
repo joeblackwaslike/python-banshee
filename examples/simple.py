@@ -1,6 +1,7 @@
 """
 Simple example
 """
+from __future__ import annotations
 
 import asyncio
 import dataclasses
@@ -39,7 +40,7 @@ registry = banshee.Registry()
 # define a command
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
+@dataclasses.dataclass(frozen=True)
 class GreetCommand:
     """
     Greet command.
@@ -62,7 +63,8 @@ async def do_greeting(command: GreetCommand) -> None:
 
     :param command: command object
     """
-    if user := user_store.get(command.user_id):
+    user = user_store.get(command.user_id)
+    if user:
         print(f"Hello {user.first_name}!")
 
 

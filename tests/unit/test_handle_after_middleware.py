@@ -154,7 +154,8 @@ async def test_it_should_drop_nested_postponed_messages_on_error() -> None:
     iterator = iter(messages)
 
     async def _side_effect(message: banshee.Message[T]) -> banshee.Message[T]:
-        if next_message := next(iterator, None):
+        next_message = next(iterator, None)
+        if next_message:
             await middleware(next_message, fake_handle)
 
         if next_message == messages[3]:

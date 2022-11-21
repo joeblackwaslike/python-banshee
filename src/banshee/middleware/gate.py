@@ -1,15 +1,18 @@
 """
 Conditionally invoke a middleware.
 """
+from __future__ import annotations
 
 import typing
+
+import typing_extensions
 
 import banshee.message
 
 T = typing.TypeVar("T")
 
 
-class Gate(typing.Protocol):
+class Gate(typing_extensions.Protocol):
     """
     Gate.
 

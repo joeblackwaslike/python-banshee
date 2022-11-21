@@ -1,17 +1,20 @@
 """
 Handlers and wiring.
 """
+from __future__ import annotations
 
 import abc
 import collections.abc
 import dataclasses
 import typing
 
+import typing_extensions
+
 import banshee.message
 
 #: T
 T = typing.TypeVar("T")
-P = typing.ParamSpec("P")
+P = typing_extensions.ParamSpec("P")
 
 #: T
 T_contra = typing.TypeVar("T_contra", contravariant=True)
@@ -33,10 +36,10 @@ class HandlerReference(typing.Generic[T]):
     # pylint: disable=too-few-public-methods
 
     name: str
-    handler: type | collections.abc.Callable[..., typing.Any]
+    handler: typing.Type | collections.abc.Callable[..., typing.Any]
 
 
-class Handler(typing.Protocol[T_contra]):
+class Handler(typing_extensions.Protocol[T_contra]):
     """
     Handler protocol.
 
@@ -46,7 +49,7 @@ class Handler(typing.Protocol[T_contra]):
     # pylint: disable=too-few-public-methods
 
     @abc.abstractmethod
-    async def __call__(self, request: T_contra, /) -> typing.Any:
+    async def __call__(self, request: T_contra) -> typing.Any:
         """
         Execute.
 
@@ -58,7 +61,7 @@ class Handler(typing.Protocol[T_contra]):
         """
 
 
-class HandlerLocator(typing.Protocol):
+class HandlerLocator(typing_extensions.Protocol):
     """
     Handler locator protocol.
 
@@ -83,7 +86,7 @@ class HandlerLocator(typing.Protocol):
         """
 
 
-class HandlerFactory(typing.Protocol):
+class HandlerFactory(typing_extensions.Protocol):
     """
     Handler factory protocol.
 
@@ -93,7 +96,7 @@ class HandlerFactory(typing.Protocol):
     # pylint: disable=too-few-public-methods
 
     @abc.abstractmethod
-    def __call__(self, reference: HandlerReference[T], /) -> Handler[T]:
+    def __call__(self, reference: HandlerReference[T]) -> Handler[T]:
         """
         Get handler.
 
@@ -121,7 +124,7 @@ class SimpleHandlerFactory(HandlerFactory):
 
     # pylint: disable=too-few-public-methods
 
-    def __call__(self, reference: HandlerReference[T], /) -> Handler[T]:
+    def __call__(self, reference: HandlerReference[T]) -> Handler[T]:
         handler = reference.handler
 
         if isinstance(handler, type):

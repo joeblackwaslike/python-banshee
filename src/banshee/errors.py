@@ -1,6 +1,7 @@
 """
 Errors raised by banshee.
 """
+from __future__ import annotations
 
 import exceptiongroup
 

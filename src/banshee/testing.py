@@ -1,6 +1,7 @@
 """
 Tools for tracing messages.
 """
+from __future__ import annotations
 
 import collections.abc
 import dataclasses
@@ -35,7 +36,7 @@ class MessageInfo:
     request: object
 
     #: request message contexts
-    contexts: tuple[object, ...]
+    contexts: typing.Tuple[object, ...]
 
     #: filename where call originated
     filename: str
@@ -50,7 +51,7 @@ class MessageInfo:
     timestamp: datetime.datetime
 
     #: result message contexts
-    result_contexts: tuple[object, ...] | None = None
+    result_contexts: typing.Tuple[object, ...] | None = None
 
 
 class TraceableBus(banshee.bus.Bus):
@@ -65,7 +66,7 @@ class TraceableBus(banshee.bus.Bus):
 
     def __init__(self, inner: banshee.bus.Bus) -> None:
         self.inner = inner
-        self._messages: list[MessageInfo] = []
+        self._messages: typing.List[MessageInfo] = []
 
     @property
     def messages(self) -> collections.abc.Sequence[MessageInfo]:

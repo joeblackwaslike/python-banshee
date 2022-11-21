@@ -1,6 +1,7 @@
 """
 Add causation and correlation identifiers to messages.
 """
+from __future__ import annotations
 
 import contextvars
 import dataclasses
@@ -18,7 +19,7 @@ T = typing.TypeVar("T")
 
 @dataclasses.dataclass
 class _CausationState:
-    stack: list[tuple[uuid.UUID, uuid.UUID]] = dataclasses.field(default_factory=list)
+    stack: typing.List[typing.Tuple[uuid.UUID, uuid.UUID]] = dataclasses.field(default_factory=list)
 
 
 class CausationMiddleware(banshee.message.Middleware):

@@ -11,7 +11,7 @@ def test_it_should_return_functions_untouched() -> None:
     it should return functions untouched
     """
 
-    def _foo(_: typing.Any, /) -> None:
+    def _foo(_: typing.Any) -> None:
         pass
 
     reference: banshee.HandlerReference[typing.Any] = banshee.HandlerReference(
@@ -32,7 +32,7 @@ def test_it_should_return_classes_instantiated() -> None:
     """
 
     class _Foo:  # pylint: disable=too-few-public-methods
-        def __call__(self, _: typing.Any, /) -> typing.Any:
+        def __call__(self, _: typing.Any) -> typing.Any:
             pass
 
     reference: banshee.HandlerReference[typing.Any] = banshee.HandlerReference(
