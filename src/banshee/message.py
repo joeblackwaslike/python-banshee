@@ -106,10 +106,11 @@ class Message(typing.Generic[T]):
 
         :returns: clone of message with updated context
         """
-        if not values:
-            return self
-
-        return dataclasses.replace(self, contexts=self.contexts + tuple(values))
+        return (
+            dataclasses.replace(self, contexts=self.contexts + tuple(values))
+            if values
+            else self
+        )
 
     def excluding(self, *key: typing.Type) -> Message[T]:
         """
@@ -147,10 +148,7 @@ def message_for(
     if not isinstance(request, Message):
         return Message(request, contexts=tuple(contexts) if contexts else tuple())
 
-    if not contexts:
-        return request
-
-    return request.including(*tuple(contexts))
+    return request.including(*tuple(contexts)) if contexts else request
 
 
 class HandleMessage(typing_extensions.Protocol):

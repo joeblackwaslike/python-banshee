@@ -72,12 +72,7 @@ class Registry(banshee.request.HandlerLocator):
 
             return f"{target.__module__}.{target.__name__}"
 
-        if isinstance(target, typing.TypeVar):
-            # return type variables by name
-
-            return target.__name__
-
-        return repr(target)
+        return target.__name__ if isinstance(target, typing.TypeVar) else repr(target)
 
     def subscribe(
         self,
