@@ -167,7 +167,7 @@ def test_all_should_return_empty_sequence_for_unknown_context() -> None:
 
     result = tuple(message.all(tests.fixture.Dummy1))
 
-    assert len(result) == 0
+    assert not result
 
 
 def test_has_should_return_true_for_matching_context() -> None:
@@ -260,7 +260,7 @@ def test_contains_should_return_true_for_matching_context() -> None:
         ),
     )
 
-    assert (tests.fixture.Dummy1 in message) is True
+    assert tests.fixture.Dummy1 in message
 
 
 def test_contains_should_return_false_for_unknown_context() -> None:
@@ -269,7 +269,7 @@ def test_contains_should_return_false_for_unknown_context() -> None:
     """
     message = banshee.Message(object(), contexts=(tests.fixture.Dummy2(),))
 
-    assert (tests.fixture.Dummy1 in message) is False
+    assert tests.fixture.Dummy1 not in message
 
 
 def test_including_creates_a_new_instance_with_same_request() -> None:
