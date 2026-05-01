@@ -26,7 +26,7 @@ async def test_it_should_call_middleware_in_order() -> None:
         result = await chain(message)
 
         print(i)
-        for middleware in middleware_list[0:i]:
+        for middleware in middleware_list[:i]:
             middleware.assert_awaited_once_with(message, chain)
 
         for middleware in middleware_list[i + 1 :]:
